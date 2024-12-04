@@ -1,9 +1,9 @@
-package com.example.chat.controller;
+package com.example.librarywatingsystem.controller;
 
-import com.example.chat.model.Message;
-import com.example.chat.model.User;
-import com.example.chat.service.MessageService;
-import com.example.chat.service.UserService;
+import com.example.librarywatingsystem.model.Message;
+import com.example.librarywatingsystem.model.User;
+import com.example.librarywatingsystem.service.MessageService;
+import com.example.librarywatingsystem.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -1,7 +1,7 @@
-package com.example.chat.service;
+package com.example.librarywatingsystem.service;
 
-import com.example.chat.model.Message;
-import com.example.chat.repository.MessageRepository;
+import com.example.librarywatingsystem.model.Message;
+import com.example.librarywatingsystem.repository.MessageRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
