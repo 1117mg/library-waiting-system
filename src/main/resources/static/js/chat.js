@@ -6,7 +6,7 @@ while (!userName) {
 }
 
 // WebSocket 연결
-const socket = new WebSocket("ws://192.168.45.129:8082/ws/chat");
+const socket = new WebSocket("ws://localhost:8082/ws/chat");
 
 socket.onopen = () => {
     // 사용자 입장 메시지 생성
