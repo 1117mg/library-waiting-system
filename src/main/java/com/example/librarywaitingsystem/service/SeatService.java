@@ -4,6 +4,8 @@ import com.example.librarywaitingsystem.model.Seat;
 import com.example.librarywaitingsystem.repository.SeatRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SeatService {
 
@@ -31,5 +33,9 @@ public class SeatService {
             seatRepository.save(seat);
             return String.format("%d번 자리 웨이팅이 등록되었습니다. 실시간 예약자수: %d명", seatNumber, seat.getWaitingCount());
         }
+    }
+
+    public List<Seat> getAllSeats() {
+        return seatRepository.findAll();
     }
 }
