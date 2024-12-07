@@ -3,14 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>실시간 채팅</title>
+    <title>Library Chat</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<div class="chat-container">
+<!-- 층 선택 화면 -->
+<div id="floor-selection" class="chat-container">
+    <div class="chat-header">
+        <h2>도서관 층 선택</h2>
+    </div>
+    <div id="floor-box" class="chat-box">
+        <button class="floor-button" onclick="selectFloor(1)">1층</button>
+        <button class="floor-button" onclick="selectFloor(2)">2층</button>
+        <button class="floor-button" onclick="selectFloor(3)">3층</button>
+        <button class="floor-button" onclick="selectFloor(4)">4층</button>
+        <button class="floor-button" onclick="selectFloor(5)">5층</button>
+        <button class="floor-button" onclick="selectFloor(6)">6층</button>
+    </div>
+</div>
+
+<!-- 역할 선택 화면 -->
+<div id="role-selection" class="chat-container hidden">
+    <div class="chat-header">
+        <h2>역할 선택</h2>
+    </div>
+    <div id="role-box" class="chat-box">
+        <button class="role-button" onclick="selectRole('user')">일반 사용자</button>
+        <button class="role-button" onclick="selectRole('admin')">관리자</button>
+    </div>
+</div>
+
+<!-- 로그인 화면 -->
+<div id="login-screen" class="chat-container hidden">
+    <div class="chat-header">
+        <h2 id="login-header">로그인</h2>
+    </div>
+    <div class="chat-box">
+        <input id="login-input" class="chat-input" type="text" placeholder="입력하세요">
+        <button class="login-button" onclick="handleLogin()">접속</button>
+    </div>
+</div>
+
+<!-- 채팅 화면 -->
+<div id="chat-container" class="chat-container hidden">
     <div class="chat-header">
         <h2>실시간 채팅</h2>
-        <button onclick="goToSeatMap()" class="seat-map-button">자리 배치도 보기</button>
+        <button class="seat-layout-button" onclick="showSeatLayout()">좌석 배치도</button>
     </div>
     <div id="chat-box" class="chat-box"></div>
     <div class="chat-input">
@@ -18,6 +56,19 @@
         <button onclick="sendMessage()">전송</button>
     </div>
 </div>
+
+<!-- 좌석 배치도 화면 -->
+<div id="seat-layout" class="chat-container hidden">
+    <div class="chat-header">
+        <h2>좌석 배치도</h2>
+        <button onclick="goBackToChat()">뒤로</button>
+    </div>
+    <div id="seat-box" class="seat-box">
+        <!-- 좌석이 동적으로 생성될 공간 -->
+    </div>
+</div>
+
+
 <script src="/js/chat.js"></script>
 </body>
 </html>
