@@ -9,4 +9,5 @@ public class MessageDTO {
     private String type; // "join", "chat", "system"
     private String sender;
     private String content;
+    private String role;
 }
