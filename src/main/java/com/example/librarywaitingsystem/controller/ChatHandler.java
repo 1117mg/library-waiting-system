@@ -35,24 +35,35 @@ public class ChatHandler extends TextWebSocketHandler {
             MessageDTO messageDTO = objectMapper.readValue(message.getPayload(), MessageDTO.class);
             String content = messageDTO.getContent();
 
-            if (content.matches("\\d+번 자리 예약")) {
-                Integer seatNumber = Integer.parseInt(content.replaceAll("\\D", ""));
-                String response = seatService.reserveSeat(seatNumber);
+            broadcastMessage(messageDTO);
 
-                MessageDTO responseMessage = new MessageDTO();
-                responseMessage.setType("system");
-                responseMessage.setContent(response);
-
-                for (WebSocketSession s : sessions) {
-                    s.sendMessage(new TextMessage(objectMapper.writeValueAsString(responseMessage)));
-                }
-            } else {
-                for (WebSocketSession s : sessions) {
-                    s.sendMessage(new TextMessage(objectMapper.writeValueAsString(messageDTO)));
-                }
+            if (isSeatReservationRequest(content)) {
+                handleSeatReservation(session, content);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private boolean isSeatReservationRequest(String content) {
+        return content.matches("\\d+번 자리 예약");
+    }
+
+    private void handleSeatReservation(WebSocketSession session, String content) throws Exception {
+        Integer seatNumber = Integer.parseInt(content.replaceAll("\\D", ""));
+        String response = seatService.reserveSeat(seatNumber);
+
+        MessageDTO responseMessage = new MessageDTO();
+        responseMessage.setType("system");
+        responseMessage.setContent(response);
+        responseMessage.setSender(null); 
+
+        broadcastMessage(responseMessage);
+    }
+
+    private void broadcastMessage(MessageDTO messageDTO) throws Exception {
+        for (WebSocketSession s : sessions) {
+            s.sendMessage(new TextMessage(objectMapper.writeValueAsString(messageDTO)));
         }
     }
 

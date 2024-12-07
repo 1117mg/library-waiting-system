@@ -172,14 +172,6 @@ body {
     width: 100%;
 }
 
-.chat-message.admin {
-    font-size: 12px;
-    color: red;
-    text-align: center;
-    background: none;
-    padding: 0;
-}
-
 .hidden {
     display: none;
 }
@@ -302,4 +294,33 @@ body {
 .chat-header button:hover {
     background-color: #1B5E20; /* 호버 시 더 진한 초록색 */
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); /* 호버 시 그림자 강조 */
+}
+
+.chat-container {
+  position: relative; 
+}
+
+.back-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 12px; 
+  font-weight: bold;
+  position: absolute; 
+  top: 10px;
+  left: 10px;
+  cursor: pointer;
+  padding: 5px;
+  z-index: 10; 
+}
+
+.pinned-message {
+  background: #ffff00;
+  color: #000;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
 }
