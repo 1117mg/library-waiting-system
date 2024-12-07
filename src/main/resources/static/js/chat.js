@@ -6,7 +6,7 @@ while (!userName) {
 }
 
 // WebSocket 연결
-const socket = new WebSocket("ws://192.168.45.129:8082/ws/chat");
+const socket = new WebSocket("ws://localhost:8082/ws/chat");
 
 socket.onopen = () => {
     // 사용자 입장 메시지 생성
@@ -56,3 +56,24 @@ function sendMessage() {
         input.value = ""; // 입력창 초기화
     }
 }
+
+function goToSeatMap() {
+    window.location.href = "/api/seats";
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+    const seatMap = document.getElementById("seat-map");
+
+    // API로 자리 데이터 가져오기
+    const response = await fetch("/api/seats");
+    const seats = await response.json();
+
+    // 자리 데이터 렌더링
+    seats.forEach(seat => {
+        const seatDiv = document.createElement("div");
+        seatDiv.classList.add("seat");
+        seatDiv.classList.add(seat.occupied === "x" ? "available" : "occupied");
+        seatDiv.textContent = `${seat.seatNumber}\n(${seat.waitingCount}명)`;
+        seatMap.appendChild(seatDiv);
+    });
+});

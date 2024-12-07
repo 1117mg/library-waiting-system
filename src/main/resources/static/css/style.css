@@ -74,3 +74,20 @@ body {
     border-radius: 4px;
     cursor: pointer;
 }
+
+.chat-message.system {
+    color: gray;
+    text-align: center;
+    font-style: italic;
+    margin: 10px 0;
+}
+
+.seat-map-button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+    border-radius: 4px;
+}
