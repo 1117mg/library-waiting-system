@@ -1,66 +1,8 @@
-// let userName;
-
-// // 사용자 이름 입력받기
-// while (!userName) {
-//     userName = prompt("이름을 입력해주세요:");
-// }
-
-// // WebSocket 연결
-// const socket = new WebSocket("ws://localhost:8082/ws/chat");
-
-// socket.onopen = () => {
-//     // 사용자 입장 메시지 생성
-//     const joinMessage = {
-//         type: "join", // 메시지 타입: 입장
-//         sender: userName,
-//         content: `${userName}님이 채팅방에 입장하셨습니다.`,
-//     };
-
-//     // 서버로 전송
-//     socket.send(JSON.stringify(joinMessage));
-// };
-
-// socket.onmessage = (event) => {
-//     const chatBox = document.getElementById("chat-box");
-//     const messageData = JSON.parse(event.data); // JSON 형식의 메시지 수신
-
-//     // 메시지 DOM 생성
-//     const message = document.createElement("div");
-//     message.classList.add("chat-message");
-
-//     // 보낸 사람과 현재 사용자 비교하여 위치 결정
-//     if (messageData.sender === userName) {
-//         message.classList.add("right"); // 본인이 보낸 메시지는 오른쪽
-//     } else {
-//         message.classList.add("left"); // 다른 사용자가 보낸 메시지는 왼쪽
-//     }
-
-//     // 메시지 내용 추가
-//     message.textContent = `${messageData.sender}: ${messageData.content}`;
-//     chatBox.appendChild(message);
-//     chatBox.scrollTop = chatBox.scrollHeight; // 스크롤을 최신 메시지로 이동
-// };
-
-// function sendMessage() {
-//     const input = document.getElementById("message-input");
-//     if (input.value.trim() !== "") {
-//         // 채팅 메시지 생성
-//         const chatMessage = {
-//             type: "chat", // 메시지 타입: 채팅
-//             sender: userName,
-//             content: input.value,
-//         };
-
-//         // 서버로 메시지 전송
-//         socket.send(JSON.stringify(chatMessage));
-//         input.value = ""; // 입력창 초기화
-//     }
-// }
-
 let userName = "";
 let userRole = "";
 let chatFloor = "";
 let socket;
+let isReconnecting = false;
 
 // 층 선택
 function selectFloor(floor) {
@@ -117,6 +59,7 @@ function connectWebSocket() {
     socket = new WebSocket(`ws://localhost:8082/ws/chat?floor=${chatFloor}`);
 
     socket.onopen = () => {
+      if (!isReconnecting) {
         const joinMessage = {
             type: "join",
             role: userRole,
@@ -124,39 +67,11 @@ function connectWebSocket() {
             content: `${userName}님이 ${chatFloor}에 입장하셨습니다.`,
         };
         socket.send(JSON.stringify(joinMessage));
+      }
+      isReconnecting = false;
     };
 
-    socket.onmessage = (event) => {
-        const chatBox = document.getElementById("chat-box");
-        const messageData = JSON.parse(event.data);
-
-        const message = document.createElement("div");
-        message.classList.add("chat-message");
-
-        if (messageData.type === "join") {
-            message.classList.add("join-message");
-            message.textContent = messageData.content;
-        } else if (messageData.type === "system") {
-            // 입장 메시지 처리
-            message.classList.add("system-message");
-            message.textContent = messageData.content;
-        } else if (messageData.type === "admin") {
-            // 관리자가 보낸 메시지 처리
-            message.classList.add("admin");
-            message.textContent = `${messageData.content}`;
-        } else if (messageData.sender === userName) {
-            // 본인이 보낸 메시지
-            message.classList.add("right");
-            message.textContent = messageData.content;
-        } else {
-            // 일반 사용자가 보낸 메시지
-            message.classList.add("left");
-            message.textContent = `${messageData.sender}: ${messageData.content}`;
-        }
-
-        chatBox.appendChild(message);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    };
+    socket.onmessage = (event) => handleIncomingMessage(event);
 
     socket.onerror = (error) => {
         console.error("WebSocket 에러:", error);
@@ -164,7 +79,16 @@ function connectWebSocket() {
 
     socket.onclose = () => {
         console.log("WebSocket 연결 종료");
+        isReconnecting = true;
+        reconnectWebSocket();
     };
+}
+
+// WebSocket 재연결 함수
+function reconnectWebSocket() {
+  if (socket.readyState === WebSocket.CLOSED || socket.readyState === WebSocket.CLOSING) {
+      connectWebSocket();  // 재연결 시도
+  }
 }
 
 // 메시지 전송
@@ -181,6 +105,43 @@ function sendMessage() {
 
     socket.send(JSON.stringify(chatMessage));
     input.value = "";
+}
+
+// 수신 메시지 처리
+function handleIncomingMessage(event) {
+  const chatBox = document.getElementById("chat-box");
+  const pinnedMessage = document.getElementById("pinned-message");
+  const messageData = JSON.parse(event.data);
+
+  const message = document.createElement("div");
+  message.classList.add("chat-message");
+
+  if (messageData.type === "join" || messageData.type === "system") {
+      message.classList.add(`${messageData.type}-message`);
+      message.textContent = messageData.content;
+  } else {
+      if (messageData.sender === userName) {
+          message.classList.add("right");
+          message.textContent = `${messageData.content}`;
+      } else {
+          message.classList.add("left");
+          message.textContent = `${messageData.sender}: ${messageData.content}`;
+      }
+
+      if (messageData.role === "admin") {
+          pinnedMessage.textContent = `[공지] ${messageData.content}`;
+          pinnedMessage.classList.remove("hidden");
+      }
+  }
+
+  chatBox.appendChild(message);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// 뒤로가기 버튼 기능
+function goBack(screenId) {
+  document.querySelectorAll('.chat-container').forEach(el => el.classList.add('hidden'));
+  document.getElementById(screenId).classList.remove('hidden');
 }
 
 // 좌석 배치도 화면 전환
