@@ -18,3 +18,6 @@
 - **데이터베이스**: SQLite
 - **실시간 통신**: WebSocket
 - **ORM**: JPA (Java Persistence API)
+
+## 네트워크 형상
+![네트워크형상_최종](https://github.com/user-attachments/assets/de0d4eeb-7a7a-422d-94c7-26d71be26212)
