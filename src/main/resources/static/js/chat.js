@@ -197,6 +197,8 @@ function goBackToChat() {
 }
 
 // 좌석 데이터 불러오기 및 렌더링
+// 좌석 데이터 불러오기 및 렌더링
+// 좌석 데이터 불러오기 및 렌더링
 function loadSeatData() {
     fetch('/api/seats') // 서버에서 좌석 데이터를 가져옴
         .then(response => response.json())
@@ -204,32 +206,36 @@ function loadSeatData() {
             // 좌석 데이터에서 51번 이상의 좌석 제외
             const filteredData = data.filter(seat => seat.seatNumber <= 50);
 
-
             // 좌석 데이터를 seatNumber 기준으로 정렬
-            data.sort((a, b) => a.seatNumber - b.seatNumber);
+            filteredData.sort((a, b) => a.seatNumber - b.seatNumber);
 
             const seatBox = document.getElementById('seat-box');
             seatBox.innerHTML = ''; // 기존 좌석 초기화
 
             // 좌석 데이터를 4개씩 묶어서 그룹 생성
-            for (let i = 0; i < data.length; i += 4) {
+            for (let i = 0; i < filteredData.length; i += 4) {
                 const group = document.createElement('div');
                 group.className = 'seat-group'; // CSS에서 그룹 스타일 적용
 
                 // 그룹 내 좌석 배치 (최대 4개)
                 const positions = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
                 for (let j = 0; j < 4; j++) {
-                    const seatData = data[i + j]; // 현재 좌석 데이터
+                    const seatData = filteredData[i + j]; // 현재 좌석 데이터
                     if (seatData) {
                         const seatElement = document.createElement('div');
 
                         // 예약 여부 판단: 예약자 수가 0 이상이거나 'occupied' 상태가 'x'
                         const isReserved = seatData.waitingCount > 0 || seatData.occupied === 'x';
                         seatElement.className = `seat ${positions[j]} ${isReserved ? 'reserved' : 'available'}`;
-                        seatElement.innerHTML = `
-                            <div class="seat-number">${seatData.seatNumber}</div>
-                            <div class="seat-count">${seatData.waitingCount}명</div>
-                        `;
+
+                        // 예약자 수 조건에 따라 렌더링
+                        const seatNumberHTML = `<div class="seat-number">${seatData.seatNumber}</div>`;
+                        let seatCountHTML = '';
+                        if (seatData.waitingCount >= 2) {
+                            seatCountHTML = `<div class="seat-count">${seatData.waitingCount - 1}명</div>`;
+                        }
+
+                        seatElement.innerHTML = seatNumberHTML + seatCountHTML;
                         group.appendChild(seatElement); // 그룹에 좌석 추가
                     }
                 }
@@ -239,4 +245,6 @@ function loadSeatData() {
         })
         .catch(error => console.error('Error loading seat data:', error));
 }
+
+
 
