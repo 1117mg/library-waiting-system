@@ -56,7 +56,7 @@ function handleLogin() {
 
 // WebSocket 연결
 function connectWebSocket() {
-    socket = new WebSocket(`ws://10.101.51.14:8082/ws/chat?floor=${chatFloor}`);
+    socket = new WebSocket(`ws://172.20.32.21:8082/ws/chat?floor=${chatFloor}`);
 
     socket.onopen = () => {
         if (!isReconnecting) {
