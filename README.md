@@ -28,7 +28,8 @@
 - **데이터베이스**: SQLite
 - **실시간 통신**: WebSocket
 - **ORM**: JPA (Java Persistence API)
-<br>
+<br><br>
+
 
 ## 서비스 영역 구조도
 ![서비스area](https://github.com/user-attachments/assets/d807a492-bfae-41dc-84e7-0f34f453871f)
