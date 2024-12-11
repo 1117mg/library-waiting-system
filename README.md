@@ -9,7 +9,7 @@
 1. [주요 기능](#주요-기능)
 2. [기술 스택](#기술-스택)
 3. [서비스 영역 구조도](#서비스-영역-구조도)
-4. [화면 소개](#화면-소개)
+4. [기능별 화면 소개](#기능별-화면-소개)
 <br><br>
 
 
@@ -36,7 +36,7 @@
 <br><br>
 
 
-## 화면 소개
+## 기능별 화면 소개
 ![image](https://github.com/user-attachments/assets/7f9e35e7-93c5-4e49-b634-d16eb9578fd3)
 ![image](https://github.com/user-attachments/assets/1ac5ed1f-5c2b-49c3-aac0-f6e7a778300d)
 ![image](https://github.com/user-attachments/assets/8293b565-7645-40b3-8621-0ef907f13acc)
