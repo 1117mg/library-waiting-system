@@ -25,4 +25,6 @@
 
 ## 서비스 영역 구조도
 ![서비스area](https://github.com/user-attachments/assets/d807a492-bfae-41dc-84e7-0f34f453871f)
+![image](https://github.com/user-attachments/assets/1a5dcab2-2dcc-4c23-820b-53787edaa964)
+
 
