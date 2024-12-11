@@ -56,9 +56,11 @@ function handleLogin() {
 
 // WebSocket 연결
 function connectWebSocket() {
-    socket = new WebSocket(`ws://172.20.32.21:8082/ws/chat?floor=${chatFloor}`);
+    console.log("WebSocket 연결 시도 중...");
+    socket = new WebSocket(`ws://172.20.32.20:8082/ws/chat?floor=${chatFloor}`);
 
     socket.onopen = () => {
+        console.log("WebSocket 연결 성공");
         if (!isReconnecting) {
             const joinMessage = {
                 type: "join",
@@ -66,12 +68,16 @@ function connectWebSocket() {
                 sender: userName,
                 content: `${userName}님이 ${chatFloor}에 입장하셨습니다.`,
             };
+            console.log("보낼 메시지:", joinMessage);
             socket.send(JSON.stringify(joinMessage));
         }
         isReconnecting = false;
     };
 
-    socket.onmessage = (event) => handleIncomingMessage(event);
+    socket.onmessage = (event) => {
+        console.log("수신한 메시지:", event.data);
+        handleIncomingMessage(event);
+    };
 
     socket.onerror = (error) => {
         console.error("WebSocket 에러:", error);
@@ -103,6 +109,7 @@ function sendMessage() {
         content: input.value,
     };
 
+    console.log("전송할 메시지:", chatMessage);
     socket.send(JSON.stringify(chatMessage));
     input.value = "";
 }
@@ -161,8 +168,12 @@ function goBackToChat() {
 // 좌석 데이터 불러오기 및 렌더링
 // 좌석 데이터 불러오기 및 렌더링
 function loadSeatData() {
+    console.log("좌석 데이터를 서버에서 불러오는 중...");
     fetch('/api/seats') // 서버에서 좌석 데이터를 가져옴
-        .then(response => response.json())
+        .then(response => {
+            console.log("서버 응답 상태:", response.status);
+            return response.json();
+        })
         .then(data => {
             // 좌석 데이터에서 51번 이상의 좌석 제외
             const filteredData = data.filter(seat => seat.seatNumber <= 50);
@@ -200,11 +211,11 @@ function loadSeatData() {
                         group.appendChild(seatElement); // 그룹에 좌석 추가
                     }
                 }
-
+                console.log("받은 좌석 데이터:", data);
                 seatBox.appendChild(group); // 컨테이너에 그룹 추가
             }
         })
-        .catch(error => console.error('Error loading seat data:', error));
+        .catch(error => console.error("좌석 데이터를 불러오는 중 에러 발생:", error));
 }
 
 

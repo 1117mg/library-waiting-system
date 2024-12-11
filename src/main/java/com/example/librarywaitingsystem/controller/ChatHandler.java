@@ -12,6 +12,9 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 @Component
 public class ChatHandler extends TextWebSocketHandler {
@@ -19,6 +22,7 @@ public class ChatHandler extends TextWebSocketHandler {
     private final Set<WebSocketSession> sessions = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final SeatService seatService;
+    private static final Logger logger = LoggerFactory.getLogger(ChatHandler.class);
 
     public ChatHandler(SeatService seatService) {
         this.seatService = seatService;
@@ -27,6 +31,7 @@ public class ChatHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         sessions.add(session);
+        logger.info("WebSocket 연결됨: {}", session.getId());
     }
 
     @Override
@@ -34,6 +39,7 @@ public class ChatHandler extends TextWebSocketHandler {
         try {
             MessageDTO messageDTO = objectMapper.readValue(message.getPayload(), MessageDTO.class);
             String content = messageDTO.getContent();
+            logger.info("메시지 수신 - 보낸 사람: {}, 내용: {}", messageDTO.getSender(), messageDTO.getContent());
 
             broadcastMessage(messageDTO);
 
@@ -41,7 +47,7 @@ public class ChatHandler extends TextWebSocketHandler {
                 handleSeatReservation(session, content);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("메시지 처리 중 에러 발생: {}", e.getMessage());
         }
     }
 
@@ -70,5 +76,6 @@ public class ChatHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, org.springframework.web.socket.CloseStatus status) {
         sessions.remove(session);
+        logger.info("WebSocket 연결 종료: {}", session.getId());
     }
 }
